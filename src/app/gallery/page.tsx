@@ -9,6 +9,7 @@ import "yet-another-react-lightbox/styles.css";
 
 function Gallery() {
   const [eventImages, setEventImages] = useState<string[]>([]);
+  const [displayImages, setDisplayImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
@@ -34,6 +35,51 @@ function Gallery() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const processImages = async () => {
+      const processed = await Promise.all(
+        eventImages.map(async (url) => {
+          if (url.toLowerCase().endsWith(".heic")) {
+            if (url.includes("cloudinary.com")) {
+              return url.replace(/\.heic$/i, ".jpg");
+            }
+            try {
+              const response = await fetch(url, { mode: 'cors' });
+              if (!response.ok) {
+                console.error(`Status error for ${url}: ${response.status}`);
+                return url;
+              }
+              const blob = await response.blob();
+              const heicBlob = blob.type === 'image/heic' ? blob : new Blob([blob], { type: 'image/heic' });
+
+              const heic2any = (await import("heic2any")).default;
+              const convertedBlob = await heic2any({
+                blob: heicBlob,
+                toType: "image/jpeg",
+                quality: 0.8,
+              });
+              const finalBlob = Array.isArray(convertedBlob)
+                ? convertedBlob[0]
+                : convertedBlob;
+              return URL.createObjectURL(finalBlob);
+            } catch (e: any) {
+              console.error(`HEIC conversion failed for ${url}`, e.message || e);
+              return url;
+            }
+          }
+          return url;
+        })
+      );
+      setDisplayImages(processed);
+    };
+
+    if (eventImages.length > 0) {
+      processImages();
+    } else {
+      setDisplayImages([]);
+    }
+  }, [eventImages]);
+
   return (
     <>
       <div>
@@ -44,7 +90,7 @@ function Gallery() {
             </div>
             <div>
               <ImagesSlider className="sm:h-[40rem] h-[20rem] rounded-2xl" images={imagesOne}>
-                <motion.div initial={{ opacity: 0, y: -80 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} style={{ zIndex: 50, display: 'flex' }}></motion.div>
+                <motion.div initial={{ opacity: 0, y: -80 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="z-50 flex"></motion.div>
               </ImagesSlider>
             </div>
 
@@ -57,7 +103,7 @@ function Gallery() {
                 <p className="text-center text-white text-xl">Loading Photos...</p>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 grid-flow-dense">
-                  {eventImages.map((imageUrl, index) => {
+                  {displayImages.map((imageUrl, index) => {
                     let itemClasses = "";
                     if ((index + 1) % 5 === 0) {
                       itemClasses = "md:col-span-2";
@@ -90,7 +136,7 @@ function Gallery() {
         index={lightboxIndex}
         open={lightboxIndex >= 0}
         close={() => setLightboxIndex(-1)}
-        slides={eventImages.map((url) => ({ src: url }))}
+        slides={displayImages.map((url) => ({ src: url }))}
       />
     </>
   );

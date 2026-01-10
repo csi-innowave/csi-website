@@ -124,13 +124,10 @@ export const MovingBorder = ({
         />
       </svg>
       <motion.div
+        className="absolute top-0 left-0 inline-block"
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          display: "inline-block",
           transform,
-        }}
+        } as any}
       >
         {children}
       </motion.div>

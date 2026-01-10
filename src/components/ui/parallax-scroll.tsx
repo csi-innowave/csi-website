@@ -13,31 +13,20 @@ interface PopupImageProps {
 const PopupImage: React.FC<PopupImageProps> = ({ src, onClose }) => {
   return (
     <div onClick={onClose}>
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      style={{
-        position: 'fixed', // Equivalent to `fixed`
-        top: 0, // Part of `inset-0`
-        right: 0, // Part of `inset-0`
-        bottom: 0, // Part of `inset-0`
-        left: 0, // Part of `inset-0`
-        zIndex: 50, // Equivalent to `z-50`
-        display: 'flex', // Equivalent to `flex`
-        alignItems: 'center', // Equivalent to `items-center`
-        justifyContent: 'center', // Equivalent to `justify-center`
-        backgroundColor: 'rgba(0, 0, 0, 0.75)', // Combines `bg-black` and `bg-opacity-75`
-      }}
-    >
-      <Image
-        src={src}
-        className="max-h-[90vh] max-w-[90vw] object-contain"
-        height={800}
-        width={800}
-        alt="popup thumbnail"
-      />
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/75"
+      >
+        <Image
+          src={src}
+          className="max-h-[90vh] max-w-[90vw] object-contain"
+          height={800}
+          width={800}
+          alt="popup thumbnail"
+        />
+      </motion.div>
     </div>
   );
 };

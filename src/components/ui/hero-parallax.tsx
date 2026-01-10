@@ -30,9 +30,9 @@ export const HeroParallax = ({ products }: { products: Product[] }) => {
 
     const firstRow = products.slice(0, products.length / 2);
     const secondRow = products.slice(products.length / 2, products.length);
-    
+
     const scrollRef = React.useRef<HTMLDivElement>(null!);
-    
+
     const { scrollYProgress } = useScroll({
         target: scrollRef,
         offset: ["start start", "end start"],
@@ -103,16 +103,9 @@ export const HeroParallax = ({ products }: { products: Product[] }) => {
                     rotateZ,
                     translateY,
                     opacity,
-                }}
+                } as any}
             >
-                <motion.div 
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row-reverse',
-                    gap: '5rem', // Equivalent to `space-x-20` in Tailwind (20 * 0.25rem)
-                    marginBottom: '5rem', // Equivalent to `mb-20` in Tailwind (20 * 0.25rem)
-                }}
-                >
+                <motion.div className="flex flex-row-reverse space-x-reverse space-x-20 mb-20">
                     {firstRow.map((product) => (
                         <ProductCard
                             product={product}
@@ -120,19 +113,12 @@ export const HeroParallax = ({ products }: { products: Product[] }) => {
                             key={product.id}
                             // setActive={setActive}
                             id={id}
-                            
+
                         />
 
                     ))}
                 </motion.div>
-                <motion.div 
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        marginBottom: '5rem', // Equivalent to `mb-20` (20 * 0.25rem = 5rem)
-                        gap: '5rem', // Equivalent to `space-x-20` (20 * 0.25rem = 5rem)
-                    }}
-                >
+                <motion.div className="flex flex-row space-x-20 mb-20">
                     {secondRow.map((product) => (
 
                         <ProductCard
@@ -142,7 +128,7 @@ export const HeroParallax = ({ products }: { products: Product[] }) => {
                             // setActive={setActive}
                             id={id}
                         />
-                        
+
                     ))}
                 </motion.div>
             </motion.div>
@@ -202,28 +188,24 @@ const ProductCard = ({
 
     return (
         <div onClick={handleClick}>
-        <motion.div
-            style={{
-                x: translate,
-                height: '24rem', // Equivalent to `h-96` (96 * 0.25rem = 24rem)
-                width: '30rem', // Equivalent to `w-[30rem]`
-                position: 'relative', // Equivalent to `relative`
-                flexShrink: 0, // Equivalent to `flex-shrink-0`
-            }}
-            key={product.id}
-            // className="group/product h-96 w-[30rem] relative flex-shrink-0"
-        >
-            <div className="block">
-                <Image
-                    src={product.posterLink}
-                    height="3200"
-                    width="800"
-                    className="object-contain object-left-top absolute h-full w-full inset-0"
-                    alt={product.title}
-                />
-            </div>
-            <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
-        </motion.div>
+            <motion.div
+                style={{
+                    x: translate,
+                }}
+                key={product.id}
+                className="group/product h-96 w-[30rem] relative flex-shrink-0"
+            >
+                <div className="block">
+                    <Image
+                        src={product.posterLink}
+                        height="3200"
+                        width="800"
+                        className="object-contain object-left-top absolute h-full w-full inset-0"
+                        alt={product.title}
+                    />
+                </div>
+                <div className="absolute inset-0 h-full w-full opacity-0 group-hover/product:opacity-80 bg-black pointer-events-none"></div>
+            </motion.div>
         </div>
     );
 };
