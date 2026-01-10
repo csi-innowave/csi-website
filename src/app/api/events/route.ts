@@ -16,9 +16,9 @@ export async function GET(request: Request) {
             },
             take: limit  // Fetch 3 most recent if limit is 3, otherwise fetch all
         });
-        
-        revalidateTag('events');
-        
+
+        // revalidateTag('events');
+
         return NextResponse.json(events, {
             headers: {
                 'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=59'

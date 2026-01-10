@@ -9,6 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  };
-  
-  export default nextConfig;
+};
+
+// Internal cache bust: 1
+export default nextConfig;

@@ -1,12 +1,8 @@
-"use client";
-
 import eventData from "@/data/eventData";
-import { useParams } from "next/navigation";
 import Image from "next/image";
 
-export default function EventPhoto() {
-    const params = useParams();
-    const { id } = params;
+export default async function EventPhoto({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
 
     const event = eventData.find((event) => event.id.toString() === id);
 
